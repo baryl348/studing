@@ -100,11 +100,13 @@ const generateJwt = (username:string) => {
                 const users = docSnap.data() 
                 res.status(200)
              }
-
-             res.status(400).json({
-                status: 3,
-                message: "Пользователь с таким токеном не найден!"
-            });
+             if (!docSnap.exists()) {
+                res.status(400).json({
+                    status: 3,
+                    message: "Пользователь с таким токеном не найден!"
+                });
+             }
+            
     } catch (error) {
         console.log("Контроллер получения пользователя" + error)
         res.status(500).json({message: "Не известная ошибка"})
