@@ -33,10 +33,13 @@ const generateJwt = (username:string) => {
                 username,
                 password: hashPassword
             });
+            if (!docSnap.exists()) {
             res.json({
                 status: 0,
                 message: 'Пользователь успешно создан!' 
             })
+            }
+           
        } catch (error) {
            console.log("Контроллер регистрации:" + error);
            res.status(400).json({
@@ -71,13 +74,13 @@ const generateJwt = (username:string) => {
         }
 
         const token = generateJwt(username);
-
-        res.json({
-            status: 0,
-            message: "Успешная авторизация!",
-            token,
-        });
-          
+        if (docSnap.exists()) {
+            res.json({
+                status: 0,
+                message: "Успешная авторизация!",
+                token,
+            });
+        }
       } catch (error) {
         console.log("Контроллер авторизации:" + error);
         res.status(400).json({
