@@ -19,8 +19,8 @@ const generateJwt = (username:string) => {
            const docSnap = (await getDoc(docRef));
            
              if (docSnap.exists()) {
-               res.json({
-                   status: 0,
+               res.status(400).json({
+                   status: 2,
                    message: "Такой пользователь уже существует!"
                })
              }
@@ -57,9 +57,9 @@ const generateJwt = (username:string) => {
         const docSnap = (await getDoc(docRef));
 
         if (!docSnap.exists()) {
-            res.json({
-                status: 0,
-                message: "Введен не правильно пароль или имя пользователя!"
+            res.status(400).json({
+                status: 3,
+                message: "Пользователь не найден!"
             })
         }
 
@@ -67,8 +67,8 @@ const generateJwt = (username:string) => {
         const validPassword = bcrypt.compareSync(password, docSnap.data()!.password);
 
         if (!validPassword) {
-            res.json({
-                status: 0,
+            res.status(400).json({
+                status: 1,
                 message: "Введен не правильно пароль или имя пользователя!"
             })
         }
@@ -101,7 +101,7 @@ const generateJwt = (username:string) => {
                 res.status(200)
              }
              if (!docSnap.exists()) {
-                res.status(400).json({
+                res.status(401).json({
                     status: 3,
                     message: "Пользователь с таким токеном не найден!"
                 });
