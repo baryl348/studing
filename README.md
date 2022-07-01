@@ -41,7 +41,7 @@ npm watch:server
 
 - Урл для пользователя http://localhost:8080/user
 - Урл для региcтрации http://localhost:8080/user/registration
-- Урл для авторизации http://localhost:8080/user/login
+- Урл для авторизации http://localhost:8080/user/auth
 - Урл для подтверждения пользователя http://localhost:8080/user/getUser
 
 ## Методы Api
@@ -71,9 +71,9 @@ message
 }
 ```
 
-| Метод  | Урл | Входные параметры | Выходные параметры |
-| ------------- | ------------- | ------------- | ------------- |
-| post  | (http://localhost:8080/user/registration)  | username, password | status, message |
-| post  | (http://localhost:8080/user/login) | username, password | status, message, token |
-| get  | (http://localhost:8080/user/getUser) | token | ничего |
+| Метод  | Урл                                       | Входные параметры | Выходные параметры |
+| ------------- |-------------------------------------------| ------------- | ------------- |
+| post  | (http://localhost:8080/user/registration) | username, password | status, message |
+| post  | (http://localhost:8080/user/auth)         | username, password | status, message, token |
+| get  | (http://localhost:8080/user/getUser)      | token | ничего |
 
