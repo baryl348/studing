@@ -12,8 +12,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
             return res.status(403).json({message: "Пользователь не авторизован"});
         }
         const decodedData = jwt.verify(token, process.env.SECRET_KEY!)   
-        // @ts-ignore
-        req.username = decodedData;
+        req.body = decodedData;
         next()
     } catch (error) {
         console.log("Юзер миддлеваре" + error);
