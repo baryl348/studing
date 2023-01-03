@@ -94,18 +94,20 @@ const generateJwt = (username:string) => {
  export const getUser = async (req: Request, res: Response) => {
     try {
         const docRef = doc(db, 'users', `${req.body.username}`);
-        const docSnap = (await getDoc(docRef));
 
-             if (docSnap.exists()) {
-                const users = docSnap.data() 
-                res.status(200)
-             }
-             if (!docSnap.exists()) {
-                res.status(401).json({
-                    status: 3,
-                    message: "Пользователь с таким токеном не найден!"
-                });
-             }
+        const docSnap = (await getDoc(docRef));
+         if (docSnap.exists()) {
+            const users = docSnap.data()
+            res.status(200).json({
+                username: users.username //todo если не указывать тело, то север виснит нахуй
+            })
+         }
+         if (!docSnap.exists()) {
+            res.status(401).json({
+                status: 3,
+                message: "Пользователь с таким токеном не найден!"
+            });
+         }
             
     } catch (error) {
         console.log("Контроллер получения пользователя" + error)
