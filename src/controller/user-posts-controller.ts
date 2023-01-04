@@ -26,10 +26,11 @@ export const createPost = async(req: Request, res: Response) => {
           })
         }
     
-        const post: Record<string, string> = {};
+        const post: Record<string, string > = {};
     
-        post[title] = title;
-        post[content] = content;
+        post['title'] = title;
+        post['content'] = content;
+        post['createTime'] = String(new Date());
     
         const dataDoc = docSnap.data();
     
