@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { collection, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { parseElementArray } from '..//utils/doc-firebase';
 
 const generateJwt = (username:string) => {
     return jwt.sign(
@@ -101,7 +102,7 @@ const generateJwt = (username:string) => {
             if (users['posts']) {
                 res.status(200).json({
                     username: users.username, //todo если не указывать тело, то север виснит нахуй
-                    posts: [users['posts']]
+                    posts: parseElementArray(users['posts'])
                 })
             }
             res.status(200).json({

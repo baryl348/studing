@@ -1,7 +1,7 @@
-import { getDataDoc } from './../utils/doc-firebase';
+import { getDataDoc, parseElementArray } from './../utils/doc-firebase';
 import type { Post } from "src/models/user-post";
 import { Request, Response } from "express"
-import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../db/db";
 
 export const createPost = async(req: Request, res: Response) => {
@@ -14,8 +14,8 @@ export const createPost = async(req: Request, res: Response) => {
         }
     
         const {title, content, username} = req.body;
-    
-        const docRef =  doc(db, 'users', `${username}`);
+
+        const docRef = doc(db, 'users', `${username}`);
     
         const docSnap = (await getDoc(docRef));
                
@@ -40,14 +40,27 @@ export const createPost = async(req: Request, res: Response) => {
                 message: "Пздц походу базе или хз что))"
             })
         }
-    
+       console.log(dataDoc);
+
+       
         // @ts-ignore
         updateDoc(docRef, {
-            posts: arrayUnion({ id: new Date().getTime(), value: post })
+            posts: arrayUnion([{ id: new Date().getTime(), value: post }])
         })
 
+        const result = (await getDataDoc(docRef)).data()
+
+        // @ts-ignore
+        if (result['posts']) {
+            res.status(200).json({
+                status: 0,
+                posts: parseElementArray(result!['posts']),
+            })
+            return;
+        }
         res.status(200).json({
-            posts: await getDataDoc(docRef),
+            status: 0,
+            posts: []
         })
 
     } catch (error) {
@@ -65,8 +78,9 @@ export const getAllPosts = async(req: Request, res: Response) => {
            if (result['posts']) {
                res.status(200).json({
                    status: 0,
-                   posts: result['posts'],
+                   posts: parseElementArray(result['posts']),
                })
+               return;
            }
            res.status(200).json({
                status: 0,
@@ -90,7 +104,7 @@ export const getAllPosts = async(req: Request, res: Response) => {
 export const deletePost = async(req: Request, res: Response) => {
     try {
         const docRef =  doc(db, 'users', `${req.body.username}`);
-        updateDoc(docRef, { posts: arrayRemove({id: req.body.id})});
+        updateDoc(docRef, { posts: arrayRemove(`${req.body.id}`)});
         res.status(200).json({
             status: 0
         })

@@ -11,8 +11,9 @@ export default (req: Request, res: Response, next: NextFunction) => {
         if (!token) {
             return res.status(403).json({message: "Пользователь не авторизован"});
         }
-        const decodedData = jwt.verify(token, process.env.SECRET_KEY!)   
-        req.body = decodedData;
+        const decodedData = jwt.verify(token, process.env.SECRET_KEY!)
+        // @ts-ignore
+        req.body = {username:decodedData.username, ...req.body};
         next()
     } catch (error) {
         console.log("Юзер миддлеваре" + error);
