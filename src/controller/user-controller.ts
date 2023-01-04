@@ -98,8 +98,15 @@ const generateJwt = (username:string) => {
         const docSnap = (await getDoc(docRef));
          if (docSnap.exists()) {
             const users = docSnap.data()
+            if (users['posts']) {
+                res.status(200).json({
+                    username: users.username, //todo если не указывать тело, то север виснит нахуй
+                    posts: [users['posts']]
+                })
+            }
             res.status(200).json({
-                username: users.username //todo если не указывать тело, то север виснит нахуй
+                username: users.username,
+                posts: [] //todo если не указывать тело, то север виснит нахуй
             })
          }
          if (!docSnap.exists()) {
