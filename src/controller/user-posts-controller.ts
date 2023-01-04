@@ -2,7 +2,7 @@ import { getDataDoc } from './../utils/doc-firebase';
 import type { Post } from "src/models/user-post";
 import { Request, Response } from "express"
 import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "src/db/db";
+import { db } from "../db/db";
 
 export const createPost = async(req: Request, res: Response) => {
     try {

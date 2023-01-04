@@ -1,10 +1,9 @@
-import { deletePost, getAllPosts } from './../controller/user-posts-controller';
+import { deletePost, getAllPosts, createPost } from './../controller/user-posts-controller';
 import  express from 'express';
-import { createPost } from 'src/controller/user-posts-controller';
-import userMiddleware from 'src/middleware/user-middleware';
+import userMiddleware from '../middleware/user-middleware';
 
 export const postRouter = express.Router();
 
 postRouter.post('/create', userMiddleware, createPost);
-postRouter.get('/get', userMiddleware, getAllPosts);
+postRouter.get('/getPost', userMiddleware, getAllPosts);
 postRouter.delete('/delete', userMiddleware, deletePost)
