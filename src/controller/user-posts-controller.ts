@@ -78,7 +78,7 @@ export const getAllPosts = async(req: Request, res: Response) => {
            if (result['posts']) {
                res.status(200).json({
                    status: 0,
-                   posts: parseElementArray(result['posts']),
+                   posts: result['posts'],
                })
                return;
            }
