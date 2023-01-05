@@ -45,7 +45,7 @@ export const createPost = async(req: Request, res: Response) => {
        
         // @ts-ignore
         updateDoc(docRef, {
-            posts: arrayUnion([{ id: new Date().getTime(), value: post }])
+            posts: arrayUnion({ id: new Date().getTime(), value: post })
         })
 
         const result = (await getDataDoc(docRef)).data()
@@ -54,7 +54,7 @@ export const createPost = async(req: Request, res: Response) => {
         if (result['posts']) {
             res.status(200).json({
                 status: 0,
-                posts: parseElementArray(result!['posts']),
+                posts: result!['posts'],
             })
             return;
         }
