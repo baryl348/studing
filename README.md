@@ -71,9 +71,11 @@ message
 }
 ```
 
-| Метод  | Урл                                       | Входные параметры | Выходные параметры |
-| ------------- |-------------------------------------------| ------------- | ------------- |
-| post  | (http://localhost:8080/user/registration) | username, password | status, message |
-| post  | (http://localhost:8080/user/auth)         | username, password | status, message, token |
-| get  | (http://localhost:8080/user/getUser)      | token | ничего |
+| Метод  | Урл                                       | Входные параметры | Выходные параметры | Авторизационный токен |
+| ------------- |-------------------------------------------| ------------- | ------------- | ------------- |
+| post  | (http://localhost:8080/user/registration) | username, password | status, message | нет |
+| post  | (http://localhost:8080/user/auth)         | username, password | status, message, token | нет |
+| get  | (http://localhost:8080/user/getUser)      | token | ничего | да |
+| post  | (http://localhost:8080/post/create)      | title: string, content: string | { status: number, posts: [ {id: string value: {title: string, content: string, createTime: Date}} ] } | да |
+| get  | (http://localhost:8080/post/getPost)      | token | { status: number, posts: [ {id: string value: {title: string, content: string, createTime: Date}} ] } | да |
 
