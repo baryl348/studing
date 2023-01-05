@@ -2,10 +2,13 @@ import './config/env';
 import express, { json } from "express";
 import cors from "cors";
 import { router } from "./routs/index-route";
+import bodyParser from 'body-parser';
+
 
 const app = express();
 const PORT = process.env.PORT || 5050;
 
+router.use(bodyParser.json())
 app.use(json());
 app.use(cors());
 app.use('/', router);
