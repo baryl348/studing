@@ -104,6 +104,7 @@ const generateJwt = (username:string) => {
                     username: users.username, //todo если не указывать тело, то север виснит нахуй
                     posts: users['posts']
                 })
+                return;
             }
             res.status(200).json({
                 username: users.username,
