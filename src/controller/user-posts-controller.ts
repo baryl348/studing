@@ -1,8 +1,13 @@
+import { helpers } from './../utils/helpers';
 import { getDataDoc, parseElementArray } from './../utils/doc-firebase';
 import type { Post } from "src/models/user-post";
 import { Request, Response } from "express"
 import { arrayRemove, arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../db/db";
+import { removeItem } from './../utils/removeItem';
+import { responseNotFound } from './../utils/ResponseEntityHelper';
+import { postNotFound } from './../utils/ResponseEntityPost';
+import { setCompleteFlag, setNotACompleteFlag } from './../utils/selectCompleteItem'
 
 export const createPost = async(req: Request, res: Response) => {
     try {
@@ -26,10 +31,11 @@ export const createPost = async(req: Request, res: Response) => {
           })
         }
     
-        const post: Record<string, string > = {};
+        const post: Record<string, string | boolean> = {};
     
         post['title'] = title;
         post['content'] = content;
+        post['isComplete'] = false;
         post['createTime'] = String(new Date());
     
         const dataDoc = docSnap.data();
@@ -103,11 +109,28 @@ export const getAllPosts = async(req: Request, res: Response) => {
 
 export const deletePost = async(req: Request, res: Response) => {
     try {
-        const docRef =  doc(db, 'users', `${req.body.username}`);
-        updateDoc(docRef, { posts: arrayRemove(`${req.body.id}`)});
-        res.status(200).json({
-            status: 0
-        })
+        const docRef = doc(db, 'users', `${req.body.username}`);
+        const docSnap = await getDataDoc(docRef);
+        if (docSnap.exists()) {
+            const result = docSnap.data();
+            if (result['posts']) {
+              const { id } = req.body;
+              const resultDeletesItem = removeItem(result['posts'], helpers().toArray(id));
+              if (!Array.isArray(resultDeletesItem)) {
+                postNotFound(res, resultDeletesItem);
+                return;
+              }
+              updateDoc(docRef, {
+                  posts: resultDeletesItem
+              })
+              res.status(200).json({
+                  status: 0
+              })
+              return;
+            }
+            postNotFound(res, 'Нет постов');
+            return;
+        }
     } catch (error) {
         console.error('delete post' + ' ' + error);
         res.status(500).json({
@@ -115,4 +138,55 @@ export const deletePost = async(req: Request, res: Response) => {
         })
     }
     
+}
+
+export const completePost = async(req: Request, res: Response) => {
+    try {
+        const docRef = doc(db, 'users', `${req.body.username}`);
+        const docSnap = await getDataDoc(docRef);
+        if (docSnap.exists()) {
+            const result = docSnap.data();
+            if (result['posts']) {
+                const { id } = req.body;
+               const resultSetFlag = setCompleteFlag(result['posts'], helpers().toArray(id));
+                res.status(200).json({
+                    status: 0,
+                    posts: resultSetFlag
+                })
+                return;
+            }
+            postNotFound(res, 'Нет постов');
+        }
+    } catch (error) {
+        console.error('set complete post' + ' ' + error);
+        res.status(500).json({
+            message: 'Произошла не изветсная ошибка при удалении поста'
+        })
+    }
+   
+}
+
+export const removeCompletePost = async(req: Request, res: Response) => {
+    try {
+        const docRef = doc(db, 'users', `${req.body.username}`);
+        const docSnap = await getDataDoc(docRef);
+        if (docSnap.exists()) {
+            const result = docSnap.data();
+            if (result['posts']) {
+                const { id } = req.body;
+               const resultSetFlag = setNotACompleteFlag(result['posts'], helpers().toArray(id));
+                res.status(200).json({
+                    status: 0,
+                    posts: resultSetFlag
+                })
+                return;
+            }
+            postNotFound(res, 'Нет постов');
+        }
+    } catch (error) {
+        console.error('set complete post' + ' ' + error);
+        res.status(500).json({
+            message: 'Произошла не изветсная ошибка при удалении поста'
+        })
+    }
 }
