@@ -9,7 +9,7 @@ const generateJwt = (username:string) => {
     return jwt.sign(
         {username},
         process.env.SECRET_KEY as string,
-        {expiresIn: '1w'}
+        {expiresIn: '1y'}
     )
 }
 
